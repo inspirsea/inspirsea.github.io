@@ -1,0 +1,22 @@
+<h1>Game of life</h1>
+
+<button class="btn" style="margin: 5px" (click)="start()">Start</button><button class="btn" style="margin: 5px" (click)="loadGame()">Stop</button>
+<select [(ngModel)]="tileSize">
+	<option value="10">10</option>
+	<option value="20">20</option>
+	<option value="40">40</option>
+	<option value="50">50</option>
+</select>
+
+<div [hidden]="editMode" [style.width]="x + 'px'" [style.height]="y + 'px'">
+	<canvas width="1200px" height="800px" #game></canvas>
+</div>
+
+<div [hidden]="!editMode" [style.width]="x + 'px'" [style.height]="y + 'px'">
+	<table cellspacing="0">
+		<tr *ngFor="let y of board.board[0]; let yIndex = index;">
+			<td *ngFor="let x of board.board; let xIndex = index" [style.width]="tileSize + 'px'" [style.height]="tileSize + 'px'" (click)="board.board[xIndex][yIndex].updateEdit(!board.board[xIndex][yIndex].alive)" [class.marked]="board.board[xIndex][yIndex].alive">
+			</td>
+		</tr>
+	</table>
+</div>
