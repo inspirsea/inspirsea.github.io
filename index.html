@@ -1,25 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Game Of Life</title>
+    <base href="/">
+    <title>Webpack</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="shortcut icon" type="image/x-icon" href="icon.ico" />
-    <!-- Polyfill(s) for older browsers -->
-    <script src="node_modules/core-js/client/shim.min.js"></script>
-
-    <script src="node_modules/zone.js/dist/zone.js"></script>
-    <script src="node_modules/reflect-metadata/Reflect.js"></script>
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
-
-    <script src="systemjs.config.js"></script>
-    <script>
-      System.import('app').catch(function(err){ console.error(err); });
-    </script>
   </head>
-
   <body style="background-color: black">
-    <app>Loading...</app>
-  </body>
+  <button style="clear: both" id="restart">Restart</button>
+  <button style="clear: both" id="start">Start</button>
+  <div id="gameContainer">
+  </div>
+  <script type="text/javascript" src="http://localhost:8080/polyfills.js"></script><script type="text/javascript" src="http://localhost:8080/vendor.js"></script><script type="text/javascript" src="http://localhost:8080/app.js"></script></body>
 </html>
