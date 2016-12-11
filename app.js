@@ -43,6 +43,7 @@ webpackJsonp([0],{
 	        this.tileSizeX = 25;
 	        this.tileSizeY = 25;
 	        this.started = false;
+	        this.startTime = 0;
 	        var doneLoading = this.context.doneListener();
 	        doneLoading.subscribe(function () {
 	            _this.render = new _1.Render();
@@ -93,6 +94,9 @@ webpackJsonp([0],{
 	                _this.renderCalls.push(_this.collidables.createRenderCall());
 	                _this.renderCalls.push(_this.tileMap.createRenderCall());
 	                _this.render.render(_this.renderCalls);
+	                if (_this.started) {
+	                    _this.timeElement.innerHTML = ((Date.now() - _this.startTime) / 1000).toString();
+	                }
 	            }
 	        };
 	    };
@@ -154,8 +158,15 @@ webpackJsonp([0],{
 	            }
 	        });
 	        document.getElementById("start").addEventListener("click", function (event) {
+	            if (_this.started == false) {
+	                _this.startTime = Date.now();
+	            }
 	            _this.started = true;
 	        });
+	        document.getElementById("restart").addEventListener("click", function (event) {
+	            _this.started = false;
+	        });
+	        this.timeElement = document.getElementById("time");
 	    };
 	    return Game;
 	}());
@@ -574,9 +585,9 @@ webpackJsonp([0],{
 	            case 3: return new model_1.Square(0, 320, 64, 64);
 	            case 15: return new model_1.Square(64, 320, 64, 64);
 	            case 16: return new model_1.Square(0, 320, 64, 64);
-	            case 50: return new model_1.Square(0, 384, 64, 64);
-	            case 51: return new model_1.Square(64, 384, 64, 64);
-	            case 52: return new model_1.Square(128, 384, 64, 64);
+	            case 50: return new model_1.Square(0, 384, 64, 60);
+	            case 51: return new model_1.Square(64, 384, 64, 60);
+	            case 52: return new model_1.Square(128, 384, 64, 60);
 	            case 100: return new model_1.Square(192, 192, 128, 128);
 	        }
 	    };
@@ -1024,16 +1035,22 @@ webpackJsonp([0],{
 	        var column = Math.floor(position.x / tileSize);
 	        var row = Math.floor(position.y / tileSize);
 	        var tilesToCheck = [];
-	        tilesToCheck.push(tiles[column - 1][row + 1]);
-	        tilesToCheck.push(tiles[column][row + 1]);
-	        tilesToCheck.push(tiles[column + 1][row + 1]);
-	        tilesToCheck.push(tiles[column - 1][row]);
-	        tilesToCheck.push(tiles[column][row]);
-	        tilesToCheck.push(tiles[column + 1][row]);
-	        tilesToCheck.push(tiles[column - 1][row - 1]);
-	        tilesToCheck.push(tiles[column][row - 1]);
-	        tilesToCheck.push(tiles[column + 1][row - 1]);
+	        this.pushNull(tiles[column - 1][row + 1], tilesToCheck);
+	        this.pushNull(tiles[column - 1][row + 1], tilesToCheck);
+	        this.pushNull(tiles[column][row + 1], tilesToCheck);
+	        this.pushNull(tiles[column + 1][row + 1], tilesToCheck);
+	        this.pushNull(tiles[column - 1][row], tilesToCheck);
+	        this.pushNull(tiles[column][row], tilesToCheck);
+	        this.pushNull(tiles[column + 1][row], tilesToCheck);
+	        this.pushNull(tiles[column - 1][row - 1], tilesToCheck);
+	        this.pushNull(tiles[column][row - 1], tilesToCheck);
+	        this.pushNull(tiles[column + 1][row - 1], tilesToCheck);
 	        return tilesToCheck;
+	    };
+	    CollisionDetection.prototype.pushNull = function (tile, tilesToCheck) {
+	        if (tile != null) {
+	            tilesToCheck.push(tile);
+	        }
 	    };
 	    CollisionDetection.prototype.checkCollision = function (tiles, rect, player) {
 	        var collision = false;
@@ -1060,6 +1077,9 @@ webpackJsonp([0],{
 	        while (wallCollision && i < 10) {
 	            i++;
 	            var tilesToCheck = this.detectPossibleCollisions(player.position, tileMap.tiles, tileSize);
+	            if (tilesToCheck.length <= 0) {
+	                player.dead = true;
+	            }
 	            wallCollision = this.checkCollision(tilesToCheck, player.getNextCollisionArea(true), player);
 	            if (wallCollision) {
 	                player.wallCollision();
